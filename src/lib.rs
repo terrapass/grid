@@ -626,6 +626,36 @@ impl<T: Clone> Grid<T> {
         return &self.data
     }
 
+    /// Returns [`GridEnumerate`](struct.GridEnumerate.html) iterator over this grid,
+    /// which yields elements as well as their coordinates.
+    ///
+    /// This is convenient in cases where one needs to know row and col for every element while iterating over the grid.
+    /// Grid elements along with their row and column indices are yielded in row-major order.
+    ///
+    /// # Examples
+    /// ```
+    /// use grid::*;
+    ///
+    /// let grid = grid![[1,2,3][4,5,6]];
+    /// let mut elements_with_coordinates = Vec::new();
+    ///
+    /// for ((row, col), element) in grid.grid_enumerate() {
+    ///     println!("element at row {} and col {} is {}", row, col, element);
+    ///     elements_with_coordinates.push(((row, col), *element));
+    /// }
+    ///
+    /// assert_eq!(
+    ///     elements_with_coordinates,
+    ///     vec![
+    ///         ((0, 0), 1),
+    ///         ((0, 1), 2),
+    ///         ((0, 2), 3),
+    ///         ((1, 0), 4),
+    ///         ((1, 1), 5),
+    ///         ((1, 2), 6)
+    ///     ]
+    /// );
+    /// ```
     pub fn grid_enumerate(&self) -> GridEnumerate<Iter<T>> {
         self.iter().into_grid_enumerate(self.cols())
     }

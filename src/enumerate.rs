@@ -15,9 +15,11 @@ impl<I> IntoGridEnumerate for I
     }
 }
 
-/// An iterator similar to `std::iter::Enumerate`,
+/// An iterator similar to [`std::iter::Enumerate`](https://doc.rust-lang.org/std/iter/struct.Enumerate.html),
 /// except it yields grid positions as (row, column) (assuming row-major order),
 /// instead of current counts as integers.
+///
+/// This iterator can be created via `Grid`'s [`grid_enumerate()`](struct.Grid.html#method.grid_enumerate) method.
 #[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug)]
 pub struct GridEnumerate<I> {
