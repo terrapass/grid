@@ -30,6 +30,8 @@ grid.push_row(vec![7,8,9]);
 assert_eq!(grid, grid![[1,2,3][4,5,6][7,8,9]])
  ```
 */
+mod enumerate;
+
 use std::cmp::Eq;
 use std::fmt;
 use std::iter::StepBy;
@@ -37,6 +39,10 @@ use std::ops::Index;
 use std::ops::IndexMut;
 use std::slice::Iter;
 use std::slice::IterMut;
+
+use crate::enumerate::IntoGridEnumerate;
+
+pub use crate::enumerate::GridEnumerate;
 
 #[doc(hidden)]
 #[macro_export]
@@ -619,6 +625,10 @@ impl<T: Clone> Grid<T> {
     pub fn flatten(&self) -> &Vec<T> {
         return &self.data
     }
+
+    pub fn grid_enumerate(&self) -> GridEnumerate<Iter<T>> {
+        self.iter().into_grid_enumerate(self.cols())
+    }
 }
 
 impl<T: Clone> Clone for Grid<T> {
@@ -1121,5 +1131,23 @@ mod test {
     fn size() {
         let grid = Grid::init(1, 2, 3);
         assert_eq!(grid.size(), (1, 2));
+    }
+
+    #[test]
+    fn grid_enumerate() {
+        let data: Vec<i32> = (0..144).collect();
+        let cols = 24;
+        let grid = Grid::from_vec(data.clone(), cols);
+
+        assert_eq!(grid.grid_enumerate().len(), data.iter().len());
+        assert!(
+            grid.grid_enumerate()
+                .zip(data.iter().enumerate())
+                .all(
+                    |(((row, col), grid_value), (idx, data_value))| {
+                        grid_value == data_value && row == idx / cols && col == idx % cols
+                    }
+                )
+        );
     }
 }
